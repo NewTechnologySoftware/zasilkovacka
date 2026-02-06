@@ -406,34 +406,81 @@
             setupEventListeners();
         });
 
-        function handleRouting() {
+function handleRouting() {
             const href = window.location.href;
+            const pathAndHash = window.location.pathname + window.location.hash + window.location.search;
             
-            // 1. Label View Logic
-            // Matches /zasilka-online-stitek/idXXX or ?id=XXX
-            if (href.includes('/zasilka-online-stitek/id') || href.includes('?id=')) {
-                let id = "";
-                if(href.includes('/zasilka-online-stitek/id')) {
-                    id = href.split('/zasilka-online-stitek/id')[1].split('/')[0];
-                } else if (href.includes('?id=')) {
-                    id = new URLSearchParams(window.location.search).get('id');
+            // 1. Logika pro vyhledání ID zásilky
+            // Hledáme vzor "id" následovaný ID kódem (např. id-Oknp...)
+            let id = null;
+            const idMatch = pathAndHash.match(/id-?([a-zA-Z0-9_-]+)/);
+            
+            if (idMatch && idMatch[1]) {
+                id = idMatch[1];
+                // Pokud Firebase ID začíná pomlčkou (např. -Oknp...), match ho mohl vzít bez ní, 
+                // ale Firebase klíče z push() často začínají pomlčkou.
+                // Proto zkontrolujeme, zda v URL nebylo "id--", což značí klíč začínající pomlčkou.
+                if (pathAndHash.includes('id-' + id)) {
+                   // ponecháme id jak je (pokud je v db bez pomlčky na začátku)
                 }
-
-                if(id) {
-                    loadLabelFromFirebase(id);
-                    return;
-                }
+                
+                // Speciální oprava pro Firebase push ID, která začínají pomlčkou (častý případ)
+                // Pokud se nedaří načíst, zkusíme přidat pomlčku zpět
+                loadLabelFromFirebase(id);
+                // Zkusíme i verzi s pomlčkou pro jistotu, pokud první selže (řešeno v loadLabel)
+                return;
             }
 
             // 2. Admin View Logic
-            // Matches /admin-main or #admin-main
-            if (href.endsWith('/admin-main') || href.includes('admin-main')) {
+            if (pathAndHash.includes('admin-main')) {
                 viewAdmin.classList.add('active-view');
+                viewHome.classList.remove('active-view');
                 return;
             }
 
             // 3. Default Home View
             viewHome.classList.add('active-view');
+        }
+
+        // Upravíme i loadLabelFromFirebase, aby byla odolnější
+        function loadLabelFromFirebase(id) {
+            const tryLoad = (targetId) => {
+                get(child(ref(db), `labels/${targetId}`)).then((snapshot) => {
+                    if (snapshot.exists()) {
+                        const data = snapshot.val();
+                        showLabelView(data);
+                    } else if (!targetId.startsWith('-')) {
+                        // Pokud ID nezačíná pomlčkou a nebylo nalezeno, zkusíme ho s pomlčkou 
+                        // (Firebase push() generuje ID začínající pomlčkou, např. -Oknp...)
+                        tryLoad('-' + targetId);
+                    } else {
+                        viewHome.classList.add('active-view');
+                    }
+                }).catch((error) => {
+                    console.error(error);
+                    viewHome.classList.add('active-view');
+                });
+            };
+            
+            tryLoad(id);
+        }
+
+        function showLabelView(data) {
+            viewHome.classList.remove('active-view');
+            viewAdmin.classList.remove('active-view');
+            viewLabel.classList.add('active-view');
+
+            document.querySelector('#view-label h1').innerText = "Online štítek pro vyzvednutí zásilky";
+            document.getElementById('label-subtitle').innerText = "Vygenerováno v systému New Technology Software:";
+
+            const btnPrint = document.querySelector('#view-label .btn-green');
+            const btnSave = document.getElementById('btn-save');
+            
+            // U veřejného náhledu skryjeme tlačítko uložit
+            if(btnSave) btnSave.style.display = 'none';
+            
+            document.getElementById('public-view-msg').style.display = 'block';
+            renderLabel(data);
         }
 
         // --- DROPDOWN LOGIC ---
@@ -811,3 +858,4 @@
 </body>
 
 </html>
+
