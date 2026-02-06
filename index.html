@@ -28,9 +28,12 @@
         .container { width: 100%; max-width: 800px; background: white; padding: 30px; margin: 20px auto; border-radius: 12px; box-shadow: var(--shadow); position: relative; }
 
         /* --- Default / Error View --- */
-        #default-view { text-align: center; padding: 50px 20px; }
-        #default-view h1 { color: var(--primary-blue); margin-bottom: 20px; }
-        #default-view p { color: #666; font-size: 1.1em; }
+        #default-view, #error-view { text-align: center; padding: 50px 20px; }
+        #default-view h1, #error-view h1 { color: var(--primary-blue); margin-bottom: 20px; }
+        #default-view p, #error-view p { color: #666; font-size: 1.1em; }
+        
+        /* Specific Error styling */
+        #error-view h1 { color: var(--error-red); }
 
         /* --- Admin / Form View --- */
         h1.main-title { font-size: 24px; margin-bottom: 15px; color: var(--text-dark); }
@@ -124,7 +127,7 @@
         /* --- Mobile Responsiveness --- */
         @media (max-width: 600px) {
             .container { padding: 15px; margin: 10px; width: calc(100% - 20px); }
-            .label-row { flex-direction: column; }
+            /* .label-row { flex-direction: column; }  <-- Removed to allow side-by-side flex for big numbers */
             .label-big { font-size: 20px; }
         }
     </style>
@@ -134,6 +137,11 @@
     <div id="default-view" class="container hidden">
         <h1>U New Technology Software jste správně</h1>
         <p>Bohužel jsme ale nerozpoznali stránku, kterou jste chtěli načíst. Zkontrolujte, zda máte správně zadanou URL adresu.</p>
+    </div>
+
+    <div id="error-view" class="container hidden">
+        <h1>New Technology Software 404</h1>
+        <p>Došlo k chybě a nepodařilo se spárovat ID a server package data. Chyba je na Vaší straně - zadaný odkaz obsahuje chybu. Zkontrolujte jej prosím.</p>
     </div>
 
     <div id="admin-view" class="container hidden">
@@ -236,11 +244,11 @@
                 <span class="label-text" id="lbl-transport">Způsob dopravy: ...</span>
                 <span class="label-text" id="lbl-provider">Dodavatel: ...</span>
             </div>
-            <div class="label-row" style="margin-top: 10px; align-items: center;">
+            <div class="label-row" style="margin-top: 10px; align-items: center; justify-content: flex-start; gap: 15px;">
                 <span class="label-text">Zásilka: </span>
                 <span class="label-big" id="lbl-shipment">XX</span>
             </div>
-            <div class="label-row" style="align-items: center;">
+            <div class="label-row" style="align-items: center; justify-content: flex-start; gap: 15px;">
                 <span class="label-text">PIN: </span>
                 <span class="label-big" id="lbl-pin">XX</span>
             </div>
@@ -354,7 +362,7 @@
         const db = getDatabase(app);
 
         // --- GLOBAL STATE ---
-        let currentMode = 'default'; // default, admin, view
+        let currentMode = 'default'; // default, admin, view, error
         let formData = {
             courier: '',
             deliveryType: '',
@@ -377,7 +385,8 @@
         const views = {
             default: document.getElementById('default-view'),
             admin: document.getElementById('admin-view'),
-            label: document.getElementById('label-result-view')
+            label: document.getElementById('label-result-view'),
+            error: document.getElementById('error-view')
         };
         const inputs = {
             courier: document.getElementById('courier-input'),
@@ -425,9 +434,18 @@
 
         // --- ADMIN FORM LOGIC ---
 
-        // Data Lists
+        // Data Lists - Updated
         const couriers = ["Zásilkovna", "Balíkovna", "Česká pošta", "PPL", "DPD", "One by Allegro / WE|DO", "Alza", "Datart", "Jiné"];
-        const deliveryTypes = ["DZ Oil Dub nad Moravou výdejní místo Allwyn Group", "Zásilkovna GigaComputer Olomouc", "Pobočka Pošta Šantovka", "AlzaBox Šantovka", "AlzaBox Šumperk (Kaufland)", "Na adresu", "Jiné"];
+        const deliveryTypes = [
+            "DZ Oil Dub nad Moravou výdejní místo Allwyn Group", 
+            "Zásilkovna GigaComputer Olomouc", 
+            "MO - Potraviny Lenka", 
+            "Pobočka Pošta Šantovka", 
+            "AlzaBox Šantovka", 
+            "AlzaBox Šumperk (Kaufland)", 
+            "Na adresu", 
+            "Jiné"
+        ];
 
         // Modal Helpers
         const openModal = (id) => document.getElementById(id).classList.add('active');
@@ -505,9 +523,6 @@
 
         document.getElementById('btn-custom-back').onclick = () => {
             closeModal('modal-custom-input');
-            // If we came from courier, reopen courier list? Requirements say "Return to list", so:
-            // Since we use one generic custom modal, we need to know context. 
-            // Simplified: Just close, user clicks field again.
         };
         document.getElementById('btn-custom-confirm').onclick = () => {
             const val = document.getElementById('custom-input-field').value;
@@ -651,12 +666,9 @@
 
         inputs.cod.addEventListener('input', (e) => {
             const val = e.target.value;
-            // Regex for positive numbers (float allowed, but simple digits preferred for currency)
+            // Regex for positive numbers
             if (/[^0-9.]/.test(val) || (val !== "" && parseFloat(val) < 0)) {
                 inputs.codError.style.display = 'block';
-                // Prevent invalid input is hard with text field, usually we strip chars, 
-                // but requirement says "Show red text". We will also clear invalid chars for UX or let user fix?
-                // "Do pole nepůjde zadat nic jiného než kladná čísla" -> strict enforcement
                 e.target.value = val.replace(/[^0-9]/g, ''); 
             } else {
                 inputs.codError.style.display = 'none';
@@ -715,10 +727,6 @@
 
         // 6. Label Generation Render
         function generateLabel(data) {
-            document.getElementById('lbl-transport').textContent = "Způsob dopravy: " + (data.isAddress ? "Na adresu" : "Na výdejní místo");
-            // The prompt says: "Způsob dopravy: XX" -> Namísto XX se ukáže "Na adresu" / "Na výdejní místo" a konkrétní adresa / výdejní místo
-            // So: "Na adresu - Street 1" or "Na výdejní místo - AlzaBox..."
-            // The inputs.type.value already contains the full string if selected from list or composed.
             document.getElementById('lbl-transport').textContent = "Způsob dopravy: " + data.deliveryType;
             
             document.getElementById('lbl-provider').textContent = "Dodavatel: " + data.courier;
@@ -731,7 +739,7 @@
                     timeStr = "";
                     document.getElementById('lbl-time-note').classList.remove('hidden');
                 } else {
-                    timeStr = `, ${data.timeFrom}:${data.timeTo}`; // Format checks? Input type time returns HH:MM
+                    timeStr = `, ${data.timeFrom}:${data.timeTo}`;
                     document.getElementById('lbl-time-note').classList.add('hidden');
                 }
                 document.getElementById('lbl-date-line').textContent = `Doručení v: ${formatDate(data.date)}${timeStr}`;
@@ -813,16 +821,14 @@
             // Remove 'id' prefix if present
             const id = rawId.replace('id', '');
             
-            views.label.classList.remove('hidden');
             // Hide Actions initially
             const btnPrint = document.getElementById('btn-print');
             const btnSave = document.getElementById('btn-save-share');
             
-            // Set UI to loading state?
-            // Fetch
             try {
                 const snapshot = await get(child(ref(db), `labels/${id}`));
                 if (snapshot.exists()) {
+                    views.label.classList.remove('hidden'); // Show Label
                     const data = snapshot.val();
                     
                     // Modify Titles for View Mode
@@ -832,7 +838,7 @@
                     generateLabel(data);
                     
                     // Disable buttons
-                    btnPrint.classList.add('btn-gray', 'disabled'); // Visual only, print still works via browser menu but requirements say disabled look
+                    btnPrint.classList.add('btn-gray', 'disabled');
                     btnPrint.style.pointerEvents = 'none';
                     btnPrint.style.opacity = '0.6';
                     
@@ -845,12 +851,15 @@
                     document.getElementById('view-mode-info').classList.remove('hidden');
 
                 } else {
+                    // Specific 404 logic
                     views.label.classList.add('hidden');
-                    views.default.classList.remove('hidden'); // Fallback if ID not found
+                    views.error.classList.remove('hidden'); // Show 404
                 }
             } catch (error) {
                 console.error(error);
-                alert("Chyba při načítání dat.");
+                // In case of network error, show 404 or alert
+                views.label.classList.add('hidden');
+                views.error.classList.remove('hidden');
             }
         }
 
