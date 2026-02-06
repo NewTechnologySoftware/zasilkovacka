@@ -23,27 +23,25 @@
         body { font-family: 'Roboto', sans-serif; background-color: var(--bg-color); color: var(--text-color); margin: 0; padding: 0; min-height: 100vh; display: flex; flex-direction: column; align-items: center; }
 
         /* --- GLOBAL LAYOUT --- */
-        .container { width: 100%; max-width: 800px; background: white; padding: 30px; border-radius: var(--border-radius); box-shadow: var(--shadow); margin: 20px 0; display: none; /* Hidden by default */ }
+        .container { width: 100%; max-width: 800px; background: white; padding: 30px; border-radius: var(--border-radius); box-shadow: var(--shadow); margin: 20px 0; display: none; }
         .active-view { display: block; animation: fadeIn 0.5s ease; }
 
         h1 { font-size: 24px; font-weight: 700; margin-bottom: 10px; text-align: center; }
         h2 { font-size: 18px; font-weight: 500; margin-bottom: 20px; color: #555; text-align: center; }
         hr { border: 0; border-top: 1px solid #ddd; margin: 20px 0; }
         
-        .section-hidden { display: none; opacity: 0; transition: opacity 0.5s ease; }
+        .section-hidden { display: none; opacity: 0; }
         .section-visible { display: block; opacity: 1; animation: slideDown 0.5s ease; }
 
         /* --- FORMS --- */
         .form-group { margin-bottom: 15px; position: relative; }
         label { display: block; font-weight: 500; margin-bottom: 5px; font-size: 14px; }
-        .sub-label { font-size: 12px; color: #666; margin-top: -3px; margin-bottom: 5px; display: block; }
         
         input[type="text"], input[type="date"], input[type="time"], .custom-select-trigger {
             width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 15px; transition: border 0.3s; background: white;
         }
-        input:focus { border-color: var(--accent-blue); }
         
-        /* Custom Select Styling */
+        /* Custom Select */
         .custom-select-wrapper { position: relative; cursor: pointer; }
         .custom-select-trigger { cursor: pointer; background: white url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"><path fill="gray" d="M7 10l5 5 5-5z"/></svg>') no-repeat right 12px center; }
         .custom-options {
@@ -54,318 +52,126 @@
         .custom-option { padding: 10px 15px; cursor: pointer; transition: background 0.2s; }
         .custom-option:hover { background-color: #f1f1f1; }
 
-        .error-text { color: var(--accent-red); font-size: 12px; margin-top: 5px; display: none; }
-        .suffix { position: absolute; right: 15px; top: 38px; color: #777; pointer-events: none; }
-
         .checkbox-wrapper { display: flex; align-items: center; margin-top: 5px; font-size: 14px; }
         .checkbox-wrapper input { margin-right: 8px; width: auto; }
 
         /* --- BUTTONS --- */
-        .btn { padding: 12px 25px; border: none; border-radius: 6px; cursor: pointer; font-size: 16px; font-weight: 600; transition: background 0.3s, transform 0.1s; display: inline-block; text-align: center; }
-        .btn:active { transform: scale(0.98); }
+        .btn { padding: 12px 25px; border: none; border-radius: 6px; cursor: pointer; font-size: 16px; font-weight: 600; transition: background 0.3s; display: inline-block; text-align: center; text-decoration: none; }
         .btn-green { background-color: var(--accent-green); color: white; width: 100%; margin-top: 20px; }
-        .btn-green:hover { background-color: #218838; }
         .btn-blue { background-color: var(--accent-blue); color: white; }
-        .btn-blue:hover { background-color: #0069d9; }
         .btn-gray { background-color: #6c757d; color: white; }
-        .btn-gray:hover { background-color: #5a6268; }
-        .btn-disabled { background-color: #cccccc !important; cursor: not-allowed; transform: none !important; }
 
-        /* --- MODALS --- */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; display: none; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.3s; }
-        .modal-overlay.open { display: flex; opacity: 1; }
-        .modal-box { background: white; padding: 25px; border-radius: 10px; width: 90%; max-width: 400px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); transform: translateY(20px); transition: transform 0.3s; }
-        .modal-overlay.open .modal-box { transform: translateY(0); }
-        .modal-title { font-size: 18px; font-weight: 700; margin-bottom: 15px; }
-        .modal-buttons { display: flex; justify-content: space-between; margin-top: 20px; gap: 10px; }
-        .modal-buttons .btn { width: 48%; margin-top: 0; }
-        
-        /* Address Modal Specifics */
-        .address-option { padding: 10px; border: 1px solid #ddd; border-radius: 5px; margin-bottom: 8px; cursor: pointer; display: flex; align-items: center; }
-        .address-option.selected { border-color: var(--accent-green); background-color: #e8f5e9; }
-        .address-option input { margin-right: 10px; }
-        .address-custom-input { overflow: hidden; max-height: 0; transition: max-height 0.4s ease, opacity 0.4s ease; opacity: 0; margin-top: 5px;}
-        .address-custom-input.show { max-height: 100px; opacity: 1; }
-
-        /* Validation Modal */
-        .validation-modal-content { text-align: center; }
-        .warning-icon { font-size: 40px; color: #ffc107; margin-bottom: 10px; }
-
-        /* --- LABEL PREVIEW --- */
-        .label-preview-container { text-align: center; }
-        .label-card {
-            border: 3px solid black; border-radius: 15px; padding: 20px; margin: 0 auto 20px auto; 
-            text-align: left; background: white; color: black;
-            max-width: 450px; /* Wallet size logic */
-            font-family: 'Roboto', sans-serif;
-            position: relative;
-        }
-        .label-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; flex-wrap: wrap; }
-        .label-full { width: 100%; margin-bottom: 6px; }
-        .label-std { font-size: 13px; color: black; font-weight: 400; }
-        .label-big { font-size: 24px; font-weight: 900; color: black; margin-left: 5px; line-height: 1; }
+        /* --- LABEL CARD --- */
+        .label-card { border: 3px solid black; border-radius: 15px; padding: 20px; margin: 0 auto 20px auto; text-align: left; background: white; color: black; max-width: 450px; position: relative; }
+        .label-big { font-size: 24px; font-weight: 900; color: black; margin-left: 5px; }
         .label-big-wrap { display: flex; align-items: baseline; width: 100%; margin-bottom: 8px; border-bottom: 1px dashed #ccc; padding-bottom: 5px; }
-        .label-small-note { font-size: 11px; color: #444; margin-top: 2px; }
-
-        .action-buttons { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+        
         .link-result-box { margin-top: 20px; padding: 15px; background: #e9ecef; border-radius: 6px; word-break: break-all; text-align: center; display: none; }
 
-        /* --- HOME / 404 --- */
-        .home-msg { text-align: center; padding: 50px 20px; }
-        .home-title { font-size: 26px; color: var(--accent-blue); margin-bottom: 15px; font-weight: 500; }
+        /* --- MODALS --- */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; display: none; justify-content: center; align-items: center; }
+        .modal-overlay.open { display: flex; }
+        .modal-box { background: white; padding: 25px; border-radius: 10px; width: 90%; max-width: 400px; }
 
-        /* --- ANIMATIONS --- */
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes slideDown { from { transform: translateY(-10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-        /* --- PRINT MEDIA --- */
         @media print {
             body * { visibility: hidden; }
             #label-card-print, #label-card-print * { visibility: visible; }
-            #label-card-print { 
-                position: absolute; left: 0; top: 0; width: 100%; max-width: 100%; 
-                border: 3px solid black !important; border-radius: 15px !important;
-                page-break-inside: avoid; margin: 0;
-            }
-            .no-print { display: none !important; }
-        }
-        
-        /* Mobile Tweaks */
-        @media (max-width: 600px) {
-            .container { padding: 15px; margin: 10px; width: auto; }
-            .modal-buttons .btn { font-size: 14px; padding: 10px; }
+            #label-card-print { position: absolute; left: 0; top: 0; width: 100%; border: 3px solid black !important; }
         }
     </style>
 </head>
 <body>
 
     <div id="view-home" class="container">
-        <div class="home-msg">
-            <div class="home-title">U New Technology Software jste správně</div>
-            <p>Bohužel jsme ale nerozpoznali stránku, kterou jste chtěli načíst. Zkontrolujte, zda máte správně zadanou URL adresu.</p>
+        <div style="text-align: center; padding: 50px 20px;">
+            <div style="font-size: 26px; color: var(--accent-blue); margin-bottom: 15px;">U New Technology Software jste správně</div>
+            <p>Zadejte platnou adresu nebo přejděte do administrace.</p>
+            <a href="#admin-main" class="btn btn-blue">Přejít do administrace</a>
         </div>
     </div>
 
     <div id="view-admin" class="container">
-        <h1>Vytvoření štítku pro vyzvednutí balíku</h1>
+        <h1>Administrace zásilek</h1>
         <hr>
-        <p style="text-align:center; margin-bottom:20px;">Vyplňte následující údaje, aby byl štítek vygenerován:</p>
+        <div class="form-group">
+            <label>Kurýrní společnost:</label>
+            <div class="custom-select-wrapper" id="sel-courier">
+                <input type="text" id="courier-input" readonly placeholder="Vyberte kurýra" class="custom-select-trigger">
+                <div id="courier-options" class="custom-options"></div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Typ doručení:</label>
+            <div class="custom-select-wrapper" id="sel-type">
+                <input type="text" id="type-input" readonly placeholder="Vyberte typ doručení" class="custom-select-trigger">
+                <div id="type-options" class="custom-options"></div>
+            </div>
+        </div>
 
-        <div id="main-form">
+        <div id="section-address-time" class="section-hidden">
+            <div class="form-group"><label>Datum doručení:</label><input type="date" id="addr-date"></div>
+            <div id="addr-time-block">
+                <div class="form-group">
+                    <label>Čas od - do:</label>
+                    <div style="display:flex; gap:10px;"><input type="time" id="addr-time-from"> <input type="time" id="addr-time-to"></div>
+                </div>
+            </div>
+            <div class="checkbox-wrapper"><input type="checkbox" id="no-time-check"> <label for="no-time-check">Čas neupřesněn</label></div>
+        </div>
+
+        <div id="section-pickup-time" class="section-hidden">
+            <div class="form-group"><label>Vyzvednout do:</label><input type="date" id="pickup-date"></div>
+        </div>
+
+        <div id="section-final-details" class="section-hidden">
+            <hr>
+            <div class="form-group"><label>ID objednávky / Balíku:</label><input type="text" id="order-id"></div>
+            <div class="form-group"><label>PIN kód:</label><input type="text" id="pin-code"></div>
+            <div class="form-group"><label>Telefon na balíku:</label><input type="text" id="phone-num"></div>
+            <div class="form-group"><label>Jméno příjemce:</label><input type="text" id="recipient-name"></div>
+            <div class="form-group"><label>Poznámka:</label><input type="text" id="internal-note"></div>
             <div class="form-group">
-                <label>Kurýrní společnost:</label>
-                <div class="custom-select-wrapper" id="sel-courier">
-                    <input type="text" id="courier-input" readonly placeholder="Vyberte kurýra" class="custom-select-trigger">
-                    <div id="courier-options" class="custom-options">
-                        </div>
-                </div>
+                <label>Dobírka:</label>
+                <input type="text" id="cod-price" placeholder="Kč">
+                <div class="checkbox-wrapper"><input type="checkbox" id="cod-paid"> <label for="cod-paid">Uhrazeno (0 Kč)</label></div>
             </div>
-
-            <div class="form-group">
-                <label>Typ doručení:</label>
-                <div class="custom-select-wrapper" id="sel-type">
-                    <input type="text" id="type-input" readonly placeholder="Vyberte typ doručení" class="custom-select-trigger">
-                    <div id="type-options" class="custom-options">
-                        </div>
-                </div>
-            </div>
-
-            <hr id="divider-1">
-            <p id="placeholder-text" style="text-align:center; color:#888;">Vyplňte požadované údaje výše...</p>
-
-            <div id="section-address-time" class="section-hidden">
-                <div class="form-group">
-                    <label>Termín doručení na adresu:</label>
-                    <span class="sub-label">* Termín by měl vycházet z informací od kurýra = již potvrzené datum a čas!</span>
-                    <input type="date" id="addr-date">
-                </div>
-                
-                <div id="addr-time-block">
-                    <div class="form-group">
-                        <label>Časový rozsah příjezdu kurýra:</label>
-                        <div style="display:flex; gap:10px;">
-                            <input type="time" id="addr-time-from" aria-label="Od">
-                            <input type="time" id="addr-time-to" aria-label="Do">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="checkbox-wrapper">
-                    <input type="checkbox" id="no-time-check">
-                    <label for="no-time-check">Kurýr neuvedl časový rozsah.</label>
-                </div>
-            </div>
-
-            <div id="section-pickup-time" class="section-hidden">
-                <div class="form-group">
-                    <label>Do kdy je zásilka uložena na výdejním místě / v boxu:</label>
-                    <input type="date" id="pickup-date">
-                </div>
-            </div>
-
-            <div id="section-final-details" class="section-hidden">
-                <hr>
-                <div class="form-group">
-                    <label>Číslo objednávky:</label>
-                    <input type="text" id="order-id">
-                </div>
-                <div class="form-group">
-                    <label>PIN kód pro vyzvednutí:</label>
-                    <input type="text" id="pin-code">
-                </div>
-                
-                <div class="form-group">
-                    <label>Interní poznámka:</label>
-                    <input type="text" id="internal-note">
-                    <div class="checkbox-wrapper">
-                        <input type="checkbox" id="no-note">
-                        <label for="no-note">Neuvádět</label>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>Telefonní číslo na balíku:</label>
-                    <input type="text" id="phone-num">
-                </div>
-                <div class="form-group">
-                    <label>Jméno a příjmení příjemce balíku:</label>
-                    <input type="text" id="recipient-name">
-                </div>
-
-                <div class="form-group">
-                    <label>Platba dobírkou:</label>
-                    <input type="text" id="cod-price" class="numeric-only">
-                    <span class="suffix" id="cod-suffix">Kč</span>
-                    <div class="error-text" id="cod-error">Je možné zadat pouze kladná čísla!</div>
-                    <div class="checkbox-wrapper">
-                        <input type="checkbox" id="cod-paid">
-                        <label for="cod-paid">Bez dobírky. Uhrazeno.</label>
-                    </div>
-                </div>
-
-                <button class="btn btn-green" id="btn-generate">Generovat -></button>
-            </div>
+            <button class="btn btn-green" id="btn-generate">Zobrazit náhled</button>
         </div>
     </div>
 
     <div id="view-label" class="container">
-        <h1>Štítek pro vyzvednutí zásilky</h1>
-        <h2 id="label-subtitle">Náhled:</h2>
-        
-        <div class="label-preview-container">
-            <div id="label-card-print" class="label-card">
-                <div class="label-row">
-                    <span class="label-std">Způsob dopravy: <strong id="lbl-type"></strong></span>
-                </div>
-                <div class="label-row">
-                    <span class="label-std">Dodavatel: <strong id="lbl-courier"></strong></span>
-                </div>
-                
-                <div class="label-big-wrap" style="margin-top:10px;">
-                    <span class="label-std">Zásilka:</span>
-                    <span class="label-big" id="lbl-order"></span>
-                </div>
-                <div class="label-big-wrap">
-                    <span class="label-std">PIN:</span>
-                    <span class="label-big" id="lbl-pin"></span>
-                </div>
-
-                <div class="label-full" style="margin-top:10px;">
-                    <span class="label-std" id="lbl-date-text"></span>
-                    <div class="label-small-note" id="lbl-time-note"></div>
-                </div>
-
-                <div class="label-row" style="margin-top:10px;">
-                    <span class="label-std">Telefonní číslo: <strong id="lbl-phone"></strong></span>
-                </div>
-                <div class="label-row">
-                    <span class="label-std">Příjemce: <strong id="lbl-recipient"></strong></span>
-                </div>
-                <div class="label-row" id="lbl-note-row">
-                    <span class="label-std">Interní poznámka: <strong id="lbl-note"></strong></span>
-                </div>
-                
-                <div class="label-full" style="margin-top:10px; border-top: 2px solid #eee; padding-top:5px;">
-                    <span class="label-std">Dobírka: <span class="label-big" id="lbl-cod"></span></span>
-                </div>
-            </div>
+        <h1>Štítek zásilky</h1>
+        <div id="label-card-print" class="label-card">
+            <div style="font-size:13px;"><strong id="lbl-courier"></strong> - <span id="lbl-type"></span></div>
+            <div class="label-big-wrap" style="margin-top:10px;"><span>Balík:</span><span class="label-big" id="lbl-order"></span></div>
+            <div class="label-big-wrap"><span>PIN:</span><span class="label-big" id="lbl-pin"></span></div>
+            <div style="margin-top:10px; font-weight: bold;" id="lbl-date-text"></div>
+            <div style="margin-top:10px; font-size:13px;">Příjemce: <strong id="lbl-recipient"></strong></div>
+            <div style="font-size:13px;">Tel: <strong id="lbl-phone"></strong></div>
+            <div id="lbl-note-display" style="font-size:12px; color:#555;"></div>
+            <div style="margin-top:10px; border-top: 2px solid #eee; padding-top:5px;">Dobírka: <span class="label-big" id="lbl-cod"></span></div>
         </div>
 
-        <div id="action-area">
-            <div class="action-buttons">
-                <button class="btn btn-green" onclick="window.print()">Vytisknout</button>
-                <button id="btn-save" class="btn btn-blue">Uložit online a sdílet</button>
-            </div>
-            
-            <div id="public-view-msg" style="display:none; margin-top:20px; color:#dc3545; text-align: center; font-weight: 500;">
-                Pokud chcete štítek tisknout, sdílet, upravovat nebo provádět jiné akce, přejděte na admin panel a přihlaste se do systému Osobní Evidence zásilek!
-            </div>
-
+        <div id="action-area" style="text-align:center;">
+            <button class="btn btn-green" onclick="window.print()">Vytisknout štítek</button>
+            <button id="btn-save" class="btn btn-blue" style="margin-top:10px;">Uložit do databáze a sdílet</button>
             <div id="link-result" class="link-result-box">
-                <strong>Odkaz na štítek:</strong><br>
-                <span id="generated-link" style="font-size:12px; color:#007bff;"></span><br>
-                <button id="btn-copy" class="btn btn-blue" style="padding:5px 10px; font-size:12px; margin-top:5px;">Zkopírovat</button>
+                <strong>Odkaz pro sdílení:</strong><br><span id="generated-link" style="color:#007bff; font-size:12px; font-weight:bold;"></span><br>
+                <button id="btn-copy" class="btn btn-blue" style="padding:5px 10px; font-size:12px; margin-top:5px;">Zkopírovat odkaz</button>
             </div>
         </div>
-        
-        <button class="btn btn-gray" style="margin-top:20px; width:100%" onclick="window.location.reload()">Zpět na začátek</button>
+        <button class="btn btn-gray" style="margin-top:20px; width:100%" onclick="window.location.hash=''; window.location.reload();">Zpět na začátek</button>
     </div>
 
-    <div id="modal-other" class="modal-overlay">
-        <div class="modal-box">
-            <div class="modal-title" id="modal-other-title">Jiný dopravce</div>
-            <p id="modal-other-text">Zadejte jiného dopravce:</p>
-            <input type="text" id="modal-other-input">
-            <div class="modal-buttons">
-                <button class="btn btn-gray" id="btn-other-back">Zpět</button>
-                <button class="btn btn-green" id="btn-other-confirm">Potvrdit</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="modal-address" class="modal-overlay">
-        <div class="modal-box">
-            <div class="modal-title">Doručení na adresu:</div>
-            <p>Zvolte adresu doručení:</p>
-            
-            <div id="addr-options-container">
-                <label class="address-option" data-val="Čertoryje 226">
-                    <input type="radio" name="addr-rad" value="Čertoryje 226"> Čertoryje 226
-                </label>
-                <label class="address-option" data-val="Čertoryje 227">
-                    <input type="radio" name="addr-rad" value="Čertoryje 227"> Čertoryje 227
-                </label>
-                <label class="address-option" data-val="Jiná">
-                    <input type="radio" name="addr-rad" value="Jiná"> Jiná
-                </label>
-            </div>
-
-            <div id="addr-custom-wrap" class="address-custom-input">
-                <p style="margin:5px 0 5px 0; font-size:14px;">Zadejte prosím konkrétní adresu:</p>
-                <input type="text" id="addr-custom-text">
-            </div>
-
-            <div class="modal-buttons">
-                <button class="btn btn-gray" id="btn-addr-back">Zpět</button>
-                <button id="btn-addr-confirm" class="btn btn-green" style="display:none;">Potvrdit</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="modal-warning" class="modal-overlay">
-        <div class="modal-box validation-modal-content">
-            <div class="warning-icon">⚠️</div>
-            <div class="modal-title">Pozor!</div>
-            <p>Je potřeba vyplnit všechna pole nebo využít zaškrtávací možnosti!</p>
-            <button class="btn btn-blue" id="btn-warning-ok">Rozumím</button>
-        </div>
-    </div>
+    <div id="modal-other" class="modal-overlay"><div class="modal-box"><h3>Vlastní údaj</h3><input type="text" id="modal-other-input" style="width:100%; padding:10px;"><div style="margin-top:15px; display:flex; gap:10px;"><button class="btn btn-gray" onclick="document.querySelector('.modal-overlay').classList.remove('open')">Zpět</button><button class="btn btn-green" id="btn-other-confirm">Potvrdit</button></div></div></div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getDatabase, ref, set, push, get, child } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-        // --- FIREBASE CONFIGURATION ---
         const firebaseConfig = {
             apiKey: "AIzaSyB7ss5yYyswMgeh7QBtbmNAG7_DAZEjlIg",
             authDomain: "stitky-zasilky-vyzvednout.firebaseapp.com",
@@ -379,483 +185,141 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        // --- APP STATE ---
-        const state = {
-            courier: "",
-            deliveryType: "", 
-            deliveryPlace: "", 
-            tempOtherTarget: "", 
-            isAddress: false,
-            currentLabelData: null
-        };
+        const state = { courier: "", deliveryPlace: "", isAddress: false, currentLabelData: null };
+        const COURIERS = ["Zásilkovna", "Balíkovna", "Česká pošta", "PPL", "DPD", "Alza", "Jiné"];
+        const TYPES = ["DZ Oil Dub nad Moravou", "GigaComputer Olomouc", "Pošta Šantovka", "AlzaBox Šantovka", "Na adresu", "Jiné"];
 
-        // --- CONSTANTS ---
-        const COURIERS = ["Zásilkovna", "Balíkovna", "Česká pošta", "PPL", "DPD", "One by Allegro / WE|DO", "Alza", "Datart", "Jiné"];
-        const TYPES = ["DZ Oil Dub nad Moravou výdejní místo Allwyn Group", "Zásilkovna GigaComputer Olomouc", "Pobočka Pošta Šantovka", "AlzaBox Šantovka", "AlzaBox Šumperk (Kaufland)", "Na adresu", "Jiné"];
+        // Spuštění po načtení
+        window.addEventListener('load', handleRouting);
+        window.addEventListener('hashchange', handleRouting);
 
-        // --- DOM ELEMENTS ---
-        const viewHome = document.getElementById('view-home');
-        const viewAdmin = document.getElementById('view-admin');
-        const viewLabel = document.getElementById('view-label');
-        
-        // --- INITIALIZATION ---
-        window.addEventListener('load', () => {
-            handleRouting();
-            populateOptions('courier-options', COURIERS, selectCourier);
-            populateOptions('type-options', TYPES, selectType);
-            setupEventListeners();
-        });
+        function handleRouting() {
+            const hash = window.location.hash;
+            document.querySelectorAll('.container').forEach(c => c.classList.remove('active-view'));
 
-function handleRouting() {
-            const href = window.location.href;
-            const pathAndHash = window.location.pathname + window.location.hash + window.location.search;
-            
-            // 1. Logika pro vyhledání ID zásilky
-            // Hledáme vzor "id" následovaný ID kódem (např. id-Oknp...)
-            let id = null;
-            const idMatch = pathAndHash.match(/id-?([a-zA-Z0-9_-]+)/);
-            
-            if (idMatch && idMatch[1]) {
-                id = idMatch[1];
-                // Pokud Firebase ID začíná pomlčkou (např. -Oknp...), match ho mohl vzít bez ní, 
-                // ale Firebase klíče z push() často začínají pomlčkou.
-                // Proto zkontrolujeme, zda v URL nebylo "id--", což značí klíč začínající pomlčkou.
-                if (pathAndHash.includes('id-' + id)) {
-                   // ponecháme id jak je (pokud je v db bez pomlčky na začátku)
-                }
-                
-                // Speciální oprava pro Firebase push ID, která začínají pomlčkou (častý případ)
-                // Pokud se nedaří načíst, zkusíme přidat pomlčku zpět
-                loadLabelFromFirebase(id);
-                // Zkusíme i verzi s pomlčkou pro jistotu, pokud první selže (řešeno v loadLabel)
-                return;
+            if (hash.includes('id-')) {
+                const id = hash.split('id-')[1];
+                loadLabel(id);
+            } else if (hash.includes('admin-main')) {
+                document.getElementById('view-admin').classList.add('active-view');
+                initAdmin();
+            } else {
+                document.getElementById('view-home').classList.add('active-view');
             }
-
-            // 2. Admin View Logic
-            if (pathAndHash.includes('admin-main')) {
-                viewAdmin.classList.add('active-view');
-                viewHome.classList.remove('active-view');
-                return;
-            }
-
-            // 3. Default Home View
-            viewHome.classList.add('active-view');
         }
 
-        // Upravíme i loadLabelFromFirebase, aby byla odolnější
-        function loadLabelFromFirebase(id) {
-            const tryLoad = (targetId) => {
-                get(child(ref(db), `labels/${targetId}`)).then((snapshot) => {
-                    if (snapshot.exists()) {
-                        const data = snapshot.val();
-                        showLabelView(data);
+        function loadLabel(id) {
+            const tryFetch = (targetId) => {
+                get(child(ref(db), `labels/${targetId}`)).then((snap) => {
+                    if (snap.exists()) {
+                        renderLabel(snap.val());
+                        document.getElementById('view-label').classList.add('active-view');
+                        document.getElementById('btn-save').style.display = 'none';
                     } else if (!targetId.startsWith('-')) {
-                        // Pokud ID nezačíná pomlčkou a nebylo nalezeno, zkusíme ho s pomlčkou 
-                        // (Firebase push() generuje ID začínající pomlčkou, např. -Oknp...)
-                        tryLoad('-' + targetId);
+                        tryFetch('-' + targetId);
                     } else {
-                        viewHome.classList.add('active-view');
+                        document.getElementById('view-home').classList.add('active-view');
                     }
-                }).catch((error) => {
-                    console.error(error);
-                    viewHome.classList.add('active-view');
                 });
             };
-            
-            tryLoad(id);
-        }
-
-        function showLabelView(data) {
-            viewHome.classList.remove('active-view');
-            viewAdmin.classList.remove('active-view');
-            viewLabel.classList.add('active-view');
-
-            document.querySelector('#view-label h1').innerText = "Online štítek pro vyzvednutí zásilky";
-            document.getElementById('label-subtitle').innerText = "Vygenerováno v systému New Technology Software:";
-
-            const btnPrint = document.querySelector('#view-label .btn-green');
-            const btnSave = document.getElementById('btn-save');
-            
-            // U veřejného náhledu skryjeme tlačítko uložit
-            if(btnSave) btnSave.style.display = 'none';
-            
-            document.getElementById('public-view-msg').style.display = 'block';
-            renderLabel(data);
-        }
-
-        // --- DROPDOWN LOGIC ---
-        function populateOptions(containerId, options, callback) {
-            const container = document.getElementById(containerId);
-            options.forEach(opt => {
-                const div = document.createElement('div');
-                div.className = 'custom-option';
-                div.innerText = opt;
-                div.addEventListener('click', () => callback(opt));
-                container.appendChild(div);
-            });
-        }
-
-        function toggleSelect(wrapperId, optionsId) {
-            const opts = document.getElementById(optionsId);
-            const isOpen = opts.classList.contains('open');
-            // Close all
-            document.querySelectorAll('.custom-options').forEach(o => o.classList.remove('open'));
-            if(!isOpen) opts.classList.add('open');
-        }
-
-        document.getElementById('sel-courier').onclick = (e) => {
-            e.stopPropagation();
-            toggleSelect('sel-courier', 'courier-options');
-        };
-        document.getElementById('sel-type').onclick = (e) => {
-            e.stopPropagation();
-            toggleSelect('sel-type', 'type-options');
-        };
-        
-        document.addEventListener('click', () => {
-            document.querySelectorAll('.custom-options').forEach(o => o.classList.remove('open'));
-        });
-
-        function selectCourier(val) {
-            if (val === 'Jiné') {
-                state.tempOtherTarget = 'courier';
-                openOtherModal("Jiný dopravce", "Zadejte jiného dopravce:");
-            } else {
-                document.getElementById('courier-input').value = val;
-                state.courier = val;
-                checkProgressive();
-            }
-        }
-
-        function selectType(val) {
-            if (val === 'Jiné') {
-                state.tempOtherTarget = 'type';
-                openOtherModal("Zadat typ doručení:", "Zadejte místo, kde je zásilka připravena na vyzvednutí:");
-            } else if (val === 'Na adresu') {
-                openAddressModal();
-            } else {
-                document.getElementById('type-input').value = val;
-                state.deliveryPlace = val;
-                state.deliveryType = "Pickup";
-                state.isAddress = false;
-                checkProgressive();
-            }
-        }
-
-        // --- MODAL LOGIC (Other) ---
-        function openOtherModal(title, text) {
-            document.getElementById('modal-other-title').innerText = title;
-            document.getElementById('modal-other-text').innerText = text;
-            document.getElementById('modal-other-input').value = "";
-            document.getElementById('modal-other').classList.add('open');
-        }
-
-        document.getElementById('btn-other-back').onclick = () => document.getElementById('modal-other').classList.remove('open');
-        document.getElementById('btn-other-confirm').onclick = () => {
-            const val = document.getElementById('modal-other-input').value.trim();
-            if(!val) return;
-            
-            if(state.tempOtherTarget === 'courier') {
-                document.getElementById('courier-input').value = val;
-                state.courier = val;
-            } else {
-                document.getElementById('type-input').value = val;
-                state.deliveryPlace = val;
-                state.deliveryType = "Pickup";
-                state.isAddress = false;
-            }
-            document.getElementById('modal-other').classList.remove('open');
-            checkProgressive();
-        };
-
-        // --- MODAL LOGIC (Address) ---
-        function openAddressModal() {
-            // Reset
-            document.querySelectorAll('input[name="addr-rad"]').forEach(r => r.checked = false);
-            document.querySelectorAll('.address-option').forEach(o => o.classList.remove('selected'));
-            document.getElementById('addr-custom-wrap').classList.remove('show');
-            document.getElementById('addr-custom-text').value = "";
-            document.getElementById('btn-addr-confirm').style.display = 'none';
-            document.getElementById('modal-address').classList.add('open');
-        }
-
-        document.querySelectorAll('.address-option').forEach(el => {
-            el.onclick = () => {
-                document.querySelectorAll('.address-option').forEach(o => o.classList.remove('selected'));
-                el.classList.add('selected');
-                el.querySelector('input').checked = true;
-                
-                const val = el.dataset.val;
-                const wrap = document.getElementById('addr-custom-wrap');
-                const btn = document.getElementById('btn-addr-confirm');
-
-                if (val === 'Jiná') {
-                    wrap.classList.add('show');
-                    btn.style.display = 'none';
-                } else {
-                    wrap.classList.remove('show');
-                    btn.style.display = 'inline-block';
-                }
-            };
-        });
-
-        document.getElementById('addr-custom-text').oninput = (e) => {
-            const btn = document.getElementById('btn-addr-confirm');
-            btn.style.display = e.target.value.length > 0 ? 'inline-block' : 'none';
-        };
-
-        document.getElementById('btn-addr-back').onclick = () => document.getElementById('modal-address').classList.remove('open');
-        
-        document.getElementById('btn-addr-confirm').onclick = () => {
-            const radio = document.querySelector('input[name="addr-rad"]:checked');
-            let finalAddr = radio.value;
-            if(finalAddr === 'Jiná') finalAddr = document.getElementById('addr-custom-text').value;
-
-            const fullText = "Na adresu - " + finalAddr;
-            document.getElementById('type-input').value = fullText;
-            state.deliveryPlace = fullText;
-            state.deliveryType = "Address";
-            state.isAddress = true;
-            document.getElementById('modal-address').classList.remove('open');
-            checkProgressive();
-        };
-
-        // --- PROGRESSIVE DISCLOSURE ---
-        function checkProgressive() {
-            const c = document.getElementById('courier-input').value;
-            const t = document.getElementById('type-input').value;
-
-            if (c && t) {
-                document.getElementById('divider-1').style.display = 'none';
-                document.getElementById('placeholder-text').style.display = 'none';
-
-                const addrSec = document.getElementById('section-address-time');
-                const pickSec = document.getElementById('section-pickup-time');
-
-                if (state.isAddress) {
-                    addrSec.classList.remove('section-hidden'); addrSec.classList.add('section-visible');
-                    pickSec.classList.remove('section-visible'); pickSec.classList.add('section-hidden');
-                } else {
-                    pickSec.classList.remove('section-hidden'); pickSec.classList.add('section-visible');
-                    addrSec.classList.remove('section-visible'); addrSec.classList.add('section-hidden');
-                }
-            }
-        }
-
-        function setupEventListeners() {
-            // Date Watchers
-            const checkFinal = () => {
-                let show = false;
-                if (state.isAddress && document.getElementById('addr-date').value) show = true;
-                if (!state.isAddress && document.getElementById('pickup-date').value) show = true;
-
-                if (show) {
-                    const sec = document.getElementById('section-final-details');
-                    sec.classList.remove('section-hidden');
-                    sec.classList.add('section-visible');
-                }
-            };
-            document.getElementById('addr-date').addEventListener('change', checkFinal);
-            document.getElementById('pickup-date').addEventListener('change', checkFinal);
-
-            // Toggles
-            document.getElementById('no-time-check').onchange = (e) => {
-                document.getElementById('addr-time-block').style.display = e.target.checked ? 'none' : 'block';
-            };
-            
-            document.getElementById('no-note').onchange = (e) => {
-                document.getElementById('internal-note').style.display = e.target.checked ? 'none' : 'block';
-            };
-
-            document.getElementById('cod-paid').onchange = (e) => {
-                const checked = e.target.checked;
-                document.getElementById('cod-price').style.display = checked ? 'none' : 'block';
-                document.getElementById('cod-suffix').style.display = checked ? 'none' : 'block';
-                document.getElementById('cod-error').style.display = 'none';
-            };
-
-            // COD Validation
-            document.getElementById('cod-price').oninput = (e) => {
-                const val = e.target.value;
-                const numeric = val.replace(/[^0-9]/g, '');
-                if(val !== numeric) {
-                    document.getElementById('cod-error').style.display = 'block';
-                    e.target.value = numeric;
-                } else {
-                    document.getElementById('cod-error').style.display = 'none';
-                }
-            };
-
-            // Warning Modal OK
-            document.getElementById('btn-warning-ok').onclick = () => document.getElementById('modal-warning').classList.remove('open');
-
-            // Generate
-            document.getElementById('btn-generate').onclick = validateAndGenerate;
-
-            // Save
-            document.getElementById('btn-save').onclick = saveToFirebase;
-            
-            // Copy
-            document.getElementById('btn-copy').onclick = () => {
-                const txt = document.getElementById('generated-link').innerText;
-                navigator.clipboard.writeText(txt).then(() => alert("Odkaz zkopírován!"));
-            };
-        }
-
-        // --- VALIDATION & GENERATION ---
-        function validateAndGenerate() {
-            let isValid = true;
-            
-            if(!state.courier || !state.deliveryPlace) isValid = false;
-
-            if (state.isAddress) {
-                if(!document.getElementById('addr-date').value) isValid = false;
-                if(!document.getElementById('no-time-check').checked) {
-                    if(!document.getElementById('addr-time-from').value || !document.getElementById('addr-time-to').value) isValid = false;
-                }
-            } else {
-                if(!document.getElementById('pickup-date').value) isValid = false;
-            }
-
-            if(!document.getElementById('order-id').value) isValid = false;
-            if(!document.getElementById('pin-code').value) isValid = false;
-            if(!document.getElementById('no-note').checked && !document.getElementById('internal-note').value) isValid = false;
-            if(!document.getElementById('phone-num').value) isValid = false;
-            if(!document.getElementById('recipient-name').value) isValid = false;
-            if(!document.getElementById('cod-paid').checked && !document.getElementById('cod-price').value) isValid = false;
-
-            if (!isValid) {
-                document.getElementById('modal-warning').classList.add('open');
-            } else {
-                generateLabel();
-            }
-        }
-
-        function generateLabel() {
-            const data = {
-                courier: state.courier,
-                typeText: state.isAddress ? "Na adresu" : "Na výdejní místo",
-                placeText: state.deliveryPlace.replace("Na adresu - ", ""),
-                orderId: document.getElementById('order-id').value,
-                pin: document.getElementById('pin-code').value,
-                phone: document.getElementById('phone-num').value,
-                recipient: document.getElementById('recipient-name').value,
-                note: document.getElementById('no-note').checked ? null : document.getElementById('internal-note').value,
-                cod: document.getElementById('cod-paid').checked ? "Bez dobírky" : document.getElementById('cod-price').value + " Kč",
-                isAddress: state.isAddress
-            };
-
-            if (state.isAddress) {
-                const d = formatDate(document.getElementById('addr-date').value);
-                if (document.getElementById('no-time-check').checked) {
-                    data.dateText = `Doručení v: ${d}`;
-                    data.timeNote = "Přesný čas nezadán.";
-                } else {
-                    const t1 = document.getElementById('addr-time-from').value;
-                    const t2 = document.getElementById('addr-time-to').value;
-                    data.dateText = `Doručení v: ${d}, ${t1}:${t2}`;
-                    data.timeNote = "";
-                }
-            } else {
-                const d = formatDate(document.getElementById('pickup-date').value);
-                data.dateText = `Uložena do: ${d}`;
-                data.timeNote = "";
-            }
-
-            renderLabel(data);
-            state.currentLabelData = data;
-
-            viewAdmin.classList.remove('active-view');
-            viewAdmin.style.display = 'none';
-            viewLabel.classList.add('active-view');
-        }
-
-        function formatDate(str) {
-            if(!str) return "";
-            const [y, m, d] = str.split('-');
-            return `${d}.${m}.${y}`;
+            tryFetch(id);
         }
 
         function renderLabel(data) {
-            document.getElementById('lbl-type').innerText = data.typeText + " " + data.placeText;
             document.getElementById('lbl-courier').innerText = data.courier;
+            document.getElementById('lbl-type').innerText = data.placeText;
             document.getElementById('lbl-order').innerText = data.orderId;
             document.getElementById('lbl-pin').innerText = data.pin;
             document.getElementById('lbl-date-text').innerText = data.dateText;
-            document.getElementById('lbl-time-note').innerText = data.timeNote;
-            document.getElementById('lbl-phone').innerText = data.phone;
             document.getElementById('lbl-recipient').innerText = data.recipient;
-            
-            const noteRow = document.getElementById('lbl-note-row');
-            if (data.note) {
-                noteRow.style.display = 'flex';
-                document.getElementById('lbl-note').innerText = data.note;
-            } else {
-                noteRow.style.display = 'none';
-            }
-
+            document.getElementById('lbl-phone').innerText = data.phone;
             document.getElementById('lbl-cod').innerText = data.cod;
+            document.getElementById('lbl-note-display').innerText = data.note ? "Poznámka: " + data.note : "";
         }
 
-        // --- FIREBASE SAVE & LOAD ---
-        function saveToFirebase() {
-            const btn = document.getElementById('btn-save');
-            btn.innerHTML = "Ukládání...";
-            btn.classList.add('btn-disabled');
-
-            const newRef = push(ref(db, 'labels'));
-            set(newRef, state.currentLabelData)
-                .then(() => {
-                    const id = newRef.key;
-                    // Base URL hardcoded per request instructions
-                    const baseUrl = `https://newtechnologysoftware.github.io/zasilkovacka/#zasilka-online-stitek/id${id}`;
-                    
-                    document.getElementById('generated-link').innerText = baseUrl;
-                    document.getElementById('link-result').style.display = 'block';
-                    btn.innerHTML = "Uloženo";
-                })
-                .catch((error) => {
-                    console.error(error);
-                    alert("Chyba při ukládání: " + error.message);
-                    btn.innerHTML = "Uložit online a sdílet";
-                    btn.classList.remove('btn-disabled');
-                });
-        }
-
-        function loadLabelFromFirebase(id) {
-            get(child(ref(db), `labels/${id}`)).then((snapshot) => {
-                if (snapshot.exists()) {
-                    const data = snapshot.val();
-                    
-                    // Setup Read-Only View
-                    viewHome.classList.remove('active-view');
-                    viewAdmin.classList.remove('active-view');
-                    viewLabel.classList.add('active-view');
-
-                    document.querySelector('#view-label h1').innerText = "Online štítek pro vyzvednutí zásilky";
-                    document.getElementById('label-subtitle').innerText = "Vygenerováno v systému New Technology Software Osobní Evidence zásilek:";
-
-                    const btnPrint = document.querySelector('#view-label .btn-green');
-                    const btnSave = document.getElementById('btn-save');
-                    
-                    btnPrint.classList.add('btn-disabled');
-                    btnPrint.onclick = null;
-                    btnSave.classList.add('btn-disabled');
-                    btnSave.onclick = null;
-
-                    document.getElementById('public-view-msg').style.display = 'block';
-
-                    renderLabel(data);
-                } else {
-                    viewHome.classList.add('active-view');
-                }
-            }).catch((error) => {
-                console.error(error);
-                viewHome.classList.add('active-view');
+        function initAdmin() {
+            // Dropdowny
+            setupDropdown('courier-options', COURIERS, 'courier-input', (v) => { state.courier = v; checkProg(); });
+            setupDropdown('type-options', TYPES, 'type-input', (v) => { 
+                state.deliveryPlace = v; 
+                state.isAddress = (v === 'Na adresu');
+                checkProg(); 
             });
+
+            document.getElementById('btn-generate').onclick = () => {
+                const data = {
+                    courier: state.courier,
+                    placeText: state.deliveryPlace,
+                    orderId: document.getElementById('order-id').value,
+                    pin: document.getElementById('pin-code').value,
+                    phone: document.getElementById('phone-num').value,
+                    recipient: document.getElementById('recipient-name').value,
+                    note: document.getElementById('internal-note').value,
+                    cod: document.getElementById('cod-paid').checked ? "0 Kč (Uhrazeno)" : document.getElementById('cod-price').value + " Kč",
+                    dateText: state.isAddress ? "Doručení: " + document.getElementById('addr-date').value : "Uloženo do: " + document.getElementById('pickup-date').value
+                };
+                state.currentLabelData = data;
+                renderLabel(data);
+                document.getElementById('view-admin').classList.remove('active-view');
+                document.getElementById('view-label').classList.add('active-view');
+                document.getElementById('btn-save').style.display = 'inline-block';
+            };
+
+            document.getElementById('btn-save').onclick = () => {
+                const btn = document.getElementById('btn-save');
+                btn.innerText = "Ukládám...";
+                const newRef = push(ref(db, 'labels'));
+                set(newRef, state.currentLabelData).then(() => {
+                    const cleanId = newRef.key.replace(/^-/, '');
+                    const url = window.location.origin + window.location.pathname + "#id-" + cleanId;
+                    document.getElementById('generated-link').innerText = url;
+                    document.getElementById('link-result').style.display = 'block';
+                    btn.innerText = "Uloženo v DB";
+                });
+            };
+
+            document.getElementById('btn-copy').onclick = () => {
+                navigator.clipboard.writeText(document.getElementById('generated-link').innerText);
+                alert("Odkaz zkopírován!");
+            };
+        }
+
+        function setupDropdown(id, opts, inputId, cb) {
+            const container = document.getElementById(id);
+            if (container.children.length > 0) return;
+            opts.forEach(o => {
+                const d = document.createElement('div');
+                d.className = 'custom-option'; d.innerText = o;
+                d.onclick = () => {
+                    if (o === 'Jiné') {
+                        document.getElementById('modal-other').classList.add('open');
+                        document.getElementById('btn-other-confirm').onclick = () => {
+                            const val = document.getElementById('modal-other-input').value;
+                            document.getElementById(inputId).value = val;
+                            cb(val);
+                            document.getElementById('modal-other').classList.remove('open');
+                        };
+                    } else {
+                        document.getElementById(inputId).value = o;
+                        cb(o);
+                    }
+                };
+                container.appendChild(d);
+            });
+            document.getElementById(inputId).onclick = (e) => {
+                e.stopPropagation();
+                container.classList.toggle('open');
+            };
+            document.addEventListener('click', () => container.classList.remove('open'));
+        }
+
+        function checkProg() {
+            if(state.courier && state.deliveryPlace) {
+                document.getElementById('section-address-time').style.display = state.isAddress ? 'block' : 'none';
+                document.getElementById('section-pickup-time').style.display = state.isAddress ? 'none' : 'block';
+                document.getElementById('section-final-details').classList.add('section-visible');
+            }
         }
     </script>
 </body>
-
 </html>
-
